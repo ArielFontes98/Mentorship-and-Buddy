@@ -1,4 +1,4 @@
-import type { RotationOpportunity, RotationApplication, RotationInterest } from "../types";
+import type { RotationOpportunity, RotationApplication, RotationInterest, ChapterChangeApplication, ChapterChangeStep } from "../types";
 
 export const rotationOpportunities: RotationOpportunity[] = [
   {
@@ -74,4 +74,63 @@ export const rotationOpportunities: RotationOpportunity[] = [
 export const rotationApplications: RotationApplication[] = [];
 
 export const rotationInterests: RotationInterest[] = [];
+
+// Chapter Change data
+export const chapterChangeApplications: ChapterChangeApplication[] = [];
+
+export const availableChapters = [
+  { id: "ch_analytics_ba_ds", name: "Analytics (BA & DS)", bu: "Analytics Brazil" },
+  { id: "ch_data_science", name: "Data Science", bu: "Analytics Brazil" },
+  { id: "ch_business_analytics", name: "Business Analytics", bu: "Lending Brazil" },
+  { id: "ch_product", name: "Product", bu: "Payments Brazil" },
+];
+
+export function getChapterChangeSteps(application: ChapterChangeApplication): ChapterChangeStep[] {
+  const steps: ChapterChangeStep[] = [
+    {
+      stepNumber: 1,
+      title: "Application Submitted",
+      description: "Your chapter change application has been submitted and is under review.",
+      status: application.status === "pending_review" ? "in_progress" : "completed",
+      completedDate: application.appliedDate,
+    },
+    {
+      stepNumber: 2,
+      title: "Manager Interview",
+      description: "Interview with the manager of the target chapter to assess fit and alignment.",
+      status: 
+        application.status === "manager_interview" ? "in_progress" :
+        ["chapter_review", "approved", "onboarding"].includes(application.status) ? "completed" :
+        application.status === "pending_review" ? "pending" : "completed",
+      completedDate: application.managerInterviewDate,
+      requiredActions: ["Schedule interview", "Prepare for interview", "Complete interview"],
+    },
+    {
+      stepNumber: 3,
+      title: "Chapter Review",
+      description: "The chapter leadership reviews your application and makes a decision.",
+      status:
+        application.status === "chapter_review" ? "in_progress" :
+        ["approved", "onboarding"].includes(application.status) ? "completed" :
+        application.status === "rejected" ? "blocked" : "pending",
+      completedDate: application.chapterDecisionDate,
+    },
+    {
+      stepNumber: 4,
+      title: "Approval & Onboarding",
+      description: "Application approved. Start onboarding process with new chapter.",
+      status:
+        application.status === "onboarding" ? "in_progress" :
+        application.status === "approved" ? "pending" : "pending",
+      requiredActions: [
+        "Complete onboarding trainings",
+        "Meet new mentor",
+        "Attend chapter welcome session",
+        "Update access and tools",
+      ],
+    },
+  ];
+  
+  return steps;
+}
 

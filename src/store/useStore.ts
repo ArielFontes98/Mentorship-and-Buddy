@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { Feedback, ActionPlanItem, BuddyCourseAllocation, RotationSuggestion, RotationApplication, RotationInterest } from '../types';
+import type { Feedback, ActionPlanItem, BuddyCourseAllocation, RotationSuggestion, RotationApplication, RotationInterest, ChapterChangeApplication } from '../types';
 
 interface AppState {
   // Journey items completion
@@ -31,6 +31,11 @@ interface AppState {
   // Rotation interests
   rotationInterests: RotationInterest[];
   addRotationInterest: (interest: RotationInterest) => void;
+  
+  // Chapter change applications
+  chapterChangeApplications: ChapterChangeApplication[];
+  addChapterChangeApplication: (application: ChapterChangeApplication) => void;
+  updateChapterChangeApplication: (id: string, updates: Partial<ChapterChangeApplication>) => void;
 }
 
 export const useStore = create<AppState>((set) => ({
@@ -41,6 +46,7 @@ export const useStore = create<AppState>((set) => ({
   rotationSuggestions: [],
   rotationApplications: [],
   rotationInterests: [],
+  chapterChangeApplications: [],
   
   toggleItemCompletion: (itemId, userId) => {
     set((state) => {
@@ -111,6 +117,20 @@ export const useStore = create<AppState>((set) => ({
   addRotationInterest: (interest) => {
     set((state) => ({
       rotationInterests: [...state.rotationInterests, interest],
+    }));
+  },
+  
+  addChapterChangeApplication: (application) => {
+    set((state) => ({
+      chapterChangeApplications: [...state.chapterChangeApplications, application],
+    }));
+  },
+  
+  updateChapterChangeApplication: (id, updates) => {
+    set((state) => ({
+      chapterChangeApplications: state.chapterChangeApplications.map((app) =>
+        app.id === id ? { ...app, ...updates } : app
+      ),
     }));
   },
 }));

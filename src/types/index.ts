@@ -250,6 +250,51 @@ export type RotationInterest = {
   createdAt: string;
 };
 
+// Chapter Change module
+export type ChapterChangeApplication = {
+  id: string;
+  userId: string;
+  fromChapter: string;
+  toChapter: string;
+  fromBU: string;
+  toBU: string;
+  function: string;
+  level: string;
+  reason: string;
+  appliedDate: string;
+  status: "pending_review" | "manager_interview" | "chapter_review" | "approved" | "rejected" | "onboarding";
+  currentStep: number;
+  totalSteps: number;
+  managerInterviewDate?: string;
+  managerInterviewStatus?: "scheduled" | "completed" | "pending";
+  managerFeedback?: string;
+  chapterDecisionDate?: string;
+  onboardingStartDate?: string;
+};
+
+export type ChapterChangeStep = {
+  stepNumber: number;
+  title: string;
+  description: string;
+  status: "pending" | "in_progress" | "completed" | "blocked";
+  completedDate?: string;
+  requiredActions?: string[];
+};
+
+export type ChapterChangeOnboarding = {
+  applicationId: string;
+  newMentorId?: string;
+  assignedTrainings: string[]; // Course IDs
+  onboardingItems: {
+    id: string;
+    title: string;
+    description: string;
+    type: "training" | "meeting" | "documentation" | "setup";
+    status: "pending" | "in_progress" | "completed";
+    dueDate?: string;
+  }[];
+};
+
 // Manager & People Dashboards
 export type TeamMember = {
   id: string;
