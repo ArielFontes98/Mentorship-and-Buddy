@@ -17,8 +17,26 @@ export function Navigation() {
   
   useEffect(() => {
     const handleHashChange = () => {
-      setCurrentPath(window.location.hash.slice(1) || "/profile");
+      const path = window.location.hash.slice(1) || "/profile";
+      setCurrentPath(path);
+      
+      // Auto-redirect to first sub-tab if clicking main tab
+      if (path === "/buddy") {
+        window.location.hash = "#/buddy/new-joiner";
+        return;
+      }
+      if (path === "/courses") {
+        window.location.hash = "#/courses/onboarding";
+        return;
+      }
+      if (path === "/mentorship") {
+        window.location.hash = "#/mentorship/mentee";
+        return;
+      }
     };
+    
+    // Check on mount
+    handleHashChange();
     
     window.addEventListener("hashchange", handleHashChange);
     return () => window.removeEventListener("hashchange", handleHashChange);
@@ -73,17 +91,29 @@ export function Navigation() {
     if (currentPath === "/buddy/buddy") {
       return <BuddyBuddyPage />;
     }
+    if (currentPath === "/buddy") {
+      // Will be redirected, but show loading state
+      return null;
+    }
     if (currentPath === "/courses/onboarding") {
       return <CoursesOnboardingPage />;
     }
     if (currentPath === "/courses/recommended") {
       return <CoursesRecommendedPage />;
     }
+    if (currentPath === "/courses") {
+      // Will be redirected, but show loading state
+      return null;
+    }
     if (currentPath === "/mentorship/mentee") {
       return <MentorshipMenteePage />;
     }
     if (currentPath === "/mentorship/mentor") {
       return <MentorshipMentorPage />;
+    }
+    if (currentPath === "/mentorship") {
+      // Will be redirected, but show loading state
+      return null;
     }
     if (currentPath === "/rotation") {
       return <RotationPage />;
@@ -95,7 +125,7 @@ export function Navigation() {
       return <PeopleTalentDashboardPage />;
     }
     // Default to profile
-    if (currentPath === "/courses" || currentPath === "") {
+    if (currentPath === "" || currentPath === "/") {
       return <ProfilePage />;
     }
     return <ProfilePage />;
