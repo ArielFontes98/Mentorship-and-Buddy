@@ -117,6 +117,24 @@ The application uses mock data with the following examples:
 - **UI Style**: Clean, modern dashboard with rounded cards, soft shadows, and subtle gradients
 - **Responsive**: Desktop-first design with mobile support
 
+## Deployment
+
+The app is automatically deployed to GitHub Pages via GitHub Actions. After pushing to the `main` branch, the workflow will:
+
+1. Build the application
+2. Deploy to GitHub Pages
+
+The app will be available at: `https://arielfontes98.github.io/Mentorship-and-Buddy/`
+
+### Manual Deployment
+
+If you need to deploy manually:
+
+```bash
+npm run build
+# Then use GitHub CLI or upload dist/ folder to GitHub Pages
+```
+
 ## License
 
 MIT
