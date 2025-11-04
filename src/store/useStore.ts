@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { Feedback, ActionPlanItem, BuddyCourseAllocation, RotationSuggestion } from '../types';
+import type { Feedback, ActionPlanItem, BuddyCourseAllocation, RotationSuggestion, RotationApplication, RotationInterest } from '../types';
 
 interface AppState {
   // Journey items completion
@@ -23,6 +23,14 @@ interface AppState {
   rotationSuggestions: RotationSuggestion[];
   addRotationSuggestion: (suggestion: RotationSuggestion) => void;
   updateRotationSuggestion: (id: string, status: "pending" | "accepted" | "rejected") => void;
+  
+  // Rotation applications
+  rotationApplications: RotationApplication[];
+  addRotationApplication: (application: RotationApplication) => void;
+  
+  // Rotation interests
+  rotationInterests: RotationInterest[];
+  addRotationInterest: (interest: RotationInterest) => void;
 }
 
 export const useStore = create<AppState>((set) => ({
@@ -31,6 +39,8 @@ export const useStore = create<AppState>((set) => ({
   actionPlanItems: [],
   buddyCourseAllocations: [],
   rotationSuggestions: [],
+  rotationApplications: [],
+  rotationInterests: [],
   
   toggleItemCompletion: (itemId, userId) => {
     set((state) => {
@@ -89,6 +99,18 @@ export const useStore = create<AppState>((set) => ({
       rotationSuggestions: state.rotationSuggestions.map((suggestion) =>
         suggestion.id === id ? { ...suggestion, status } : suggestion
       ),
+    }));
+  },
+  
+  addRotationApplication: (application) => {
+    set((state) => ({
+      rotationApplications: [...state.rotationApplications, application],
+    }));
+  },
+  
+  addRotationInterest: (interest) => {
+    set((state) => ({
+      rotationInterests: [...state.rotationInterests, interest],
     }));
   },
 }));

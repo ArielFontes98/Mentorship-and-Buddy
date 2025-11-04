@@ -150,3 +150,102 @@ export type MatchingSuggestion = {
   score: number;
   explanation: string[];
 };
+
+// Profile & History module
+export type UserProfile = {
+  id: string;
+  name: string;
+  email: string;
+  currentFunction: string;
+  currentLevel: string;
+  currentBU: string;
+  currentChapter: string;
+  country: string;
+  timeZone: string;
+  startDate: string; // When they joined Nubank
+  skills: string[];
+  interests: string[];
+  performanceHistory: PerformanceRecord[];
+  buHistory: BUHistory[];
+  chapterHistory: ChapterHistory[];
+  completedCourses: string[]; // Course IDs
+  mentorshipHistory: MentorshipHistory[];
+};
+
+export type PerformanceRecord = {
+  id: string;
+  period: string; // e.g., "2024 Q1", "2024 H1"
+  rating: "exceeds" | "meets" | "below";
+  feedback: string;
+  goals: string[];
+  achievements: string[];
+};
+
+export type BUHistory = {
+  id: string;
+  bu: string;
+  function: string;
+  startDate: string;
+  endDate?: string;
+  isCurrent: boolean;
+};
+
+export type ChapterHistory = {
+  id: string;
+  chapter: string;
+  startDate: string;
+  endDate?: string;
+  isCurrent: boolean;
+};
+
+export type MentorshipHistory = {
+  id: string;
+  mentorId: string;
+  mentorName: string;
+  startDate: string;
+  endDate?: string;
+  status: "completed" | "active" | "cancelled";
+  focusAreas: string[];
+};
+
+// Rotation module
+export type RotationOpportunity = {
+  id: string;
+  bu: string;
+  chapter: string;
+  function: string;
+  level: string;
+  country: string;
+  title: string;
+  description: string;
+  requiredSkills: string[];
+  preferredSkills: string[];
+  managerEmail?: string;
+  postedDate: string;
+  deadline?: string;
+  status: "open" | "closed" | "filled";
+  slotsAvailable: number;
+};
+
+export type RotationApplication = {
+  id: string;
+  opportunityId: string;
+  userId: string;
+  appliedDate: string;
+  status: "pending" | "reviewing" | "accepted" | "rejected";
+  coverLetter?: string;
+  matchScore?: number;
+  matchExplanation?: string[];
+};
+
+export type RotationInterest = {
+  id: string;
+  userId: string;
+  bu?: string;
+  chapter?: string;
+  function?: string;
+  level?: string;
+  reason: string;
+  priority: "high" | "medium" | "low";
+  createdAt: string;
+};

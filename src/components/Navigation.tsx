@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
-import { BookOpen, Users, GraduationCap } from "lucide-react";
+import { BookOpen, Users, GraduationCap, User, ArrowRightLeft } from "lucide-react";
 import { BuddyNewJoinerPage } from "../pages/BuddyNewJoinerPage";
 import { BuddyBuddyPage } from "../pages/BuddyBuddyPage";
 import { MentorshipMenteePage } from "../pages/MentorshipMenteePage";
 import { MentorshipMentorPage } from "../pages/MentorshipMentorPage";
 import { CoursesOnboardingPage } from "../pages/CoursesOnboardingPage";
 import { CoursesRecommendedPage } from "../pages/CoursesRecommendedPage";
+import { ProfilePage } from "../pages/ProfilePage";
+import { RotationPage } from "../pages/RotationPage";
 
 export function Navigation() {
   const [currentPath, setCurrentPath] = useState(window.location.hash.slice(1) || "/buddy/new-joiner");
@@ -23,6 +25,8 @@ export function Navigation() {
     { id: "courses", label: "Courses", icon: BookOpen, path: "#/courses" },
     { id: "buddy", label: "Buddy", icon: Users, path: "#/buddy" },
     { id: "mentorship", label: "Mentorship", icon: GraduationCap, path: "#/mentorship" },
+    { id: "profile", label: "Profile", icon: User, path: "#/profile" },
+    { id: "rotation", label: "Rotation", icon: ArrowRightLeft, path: "#/rotation" },
   ];
   
   const buddySubTabs = [
@@ -44,6 +48,8 @@ export function Navigation() {
     if (currentPath.startsWith("/buddy")) return "buddy";
     if (currentPath.startsWith("/mentorship")) return "mentorship";
     if (currentPath.startsWith("/courses")) return "courses";
+    if (currentPath.startsWith("/profile")) return "profile";
+    if (currentPath.startsWith("/rotation")) return "rotation";
     return "courses";
   };
   
@@ -65,6 +71,12 @@ export function Navigation() {
     }
     if (currentPath === "/mentorship/mentor") {
       return <MentorshipMentorPage />;
+    }
+    if (currentPath === "/profile") {
+      return <ProfilePage />;
+    }
+    if (currentPath === "/rotation") {
+      return <RotationPage />;
     }
     // Default to courses onboarding
     if (currentPath === "/courses" || currentPath === "") {
