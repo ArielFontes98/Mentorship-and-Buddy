@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { BookOpen, Users, GraduationCap, User, ArrowRightLeft } from "lucide-react";
+import { BookOpen, Users, GraduationCap, User, ArrowRightLeft, BarChart3, Building2 } from "lucide-react";
 import { BuddyNewJoinerPage } from "../pages/BuddyNewJoinerPage";
 import { BuddyBuddyPage } from "../pages/BuddyBuddyPage";
 import { MentorshipMenteePage } from "../pages/MentorshipMenteePage";
@@ -8,6 +8,8 @@ import { CoursesOnboardingPage } from "../pages/CoursesOnboardingPage";
 import { CoursesRecommendedPage } from "../pages/CoursesRecommendedPage";
 import { ProfilePage } from "../pages/ProfilePage";
 import { RotationPage } from "../pages/RotationPage";
+import { ManagerDashboardPage } from "../pages/ManagerDashboardPage";
+import { PeopleTalentDashboardPage } from "../pages/PeopleTalentDashboardPage";
 
 export function Navigation() {
   const [currentPath, setCurrentPath] = useState(window.location.hash.slice(1) || "/buddy/new-joiner");
@@ -27,6 +29,8 @@ export function Navigation() {
     { id: "mentorship", label: "Mentorship", icon: GraduationCap, path: "#/mentorship" },
     { id: "profile", label: "Profile", icon: User, path: "#/profile" },
     { id: "rotation", label: "Rotation", icon: ArrowRightLeft, path: "#/rotation" },
+    { id: "manager", label: "Manager", icon: BarChart3, path: "#/manager/dashboard" },
+    { id: "people", label: "People", icon: Building2, path: "#/people/talent-dashboard" },
   ];
   
   const buddySubTabs = [
@@ -50,6 +54,8 @@ export function Navigation() {
     if (currentPath.startsWith("/courses")) return "courses";
     if (currentPath.startsWith("/profile")) return "profile";
     if (currentPath.startsWith("/rotation")) return "rotation";
+    if (currentPath.startsWith("/manager")) return "manager";
+    if (currentPath.startsWith("/people")) return "people";
     return "courses";
   };
   
@@ -77,6 +83,12 @@ export function Navigation() {
     }
     if (currentPath === "/rotation") {
       return <RotationPage />;
+    }
+    if (currentPath === "/manager/dashboard") {
+      return <ManagerDashboardPage />;
+    }
+    if (currentPath === "/people/talent-dashboard") {
+      return <PeopleTalentDashboardPage />;
     }
     // Default to courses onboarding
     if (currentPath === "/courses" || currentPath === "") {

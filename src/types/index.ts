@@ -249,3 +249,102 @@ export type RotationInterest = {
   priority: "high" | "medium" | "low";
   createdAt: string;
 };
+
+// Manager & People Dashboards
+export type TeamMember = {
+  id: string;
+  name: string;
+  email: string;
+  function: string;
+  level: string;
+  bu: string;
+  chapter: string;
+  country: string;
+  managerId: string;
+  skills: {
+    name: string;
+    currentLevel: number; // 1-5
+    expectedLevel: number; // 1-5 for their IC level
+  }[];
+  buddyStatus?: "active" | "completed" | "not_assigned";
+  mentorshipStatus?: "active" | "planned" | "completed" | "not_started";
+  rotationInterest?: {
+    declared: boolean;
+    priority: "high" | "medium" | "low" | null;
+    next12Months: boolean;
+  };
+  tenure: number; // months
+  startDate: string;
+};
+
+export type TeamSnapshot = {
+  teamSize: number;
+  countries: string[];
+  chapters: string[];
+  activeBuddyPercentage: number;
+  activeMentorshipPercentage: number;
+  rotationInterestPercentage: number;
+};
+
+export type ProgramParticipation = {
+  memberId: string;
+  buddyStatus: "active" | "completed" | "not_assigned";
+  buddyProgress?: number; // 0-100
+  mentorshipStatus: "active" | "planned" | "completed" | "not_started";
+  mentorshipProgress?: number; // 0-100
+  keyCourses: {
+    courseId: string;
+    status: "in_progress" | "completed";
+    progress?: number;
+  }[];
+  alerts: string[];
+};
+
+export type MobilityItem = {
+  memberId: string;
+  memberName: string;
+  rotationInterest: RotationInterest | null;
+  topMatches: {
+    opportunityId: string;
+    matchScore: number;
+    title: string;
+    bu: string;
+    chapter: string;
+  }[];
+  readiness: "ready_soon" | "exploring" | "early_days";
+};
+
+export type TalentMetrics = {
+  internalFillRate: number; // %
+  avgTimeToFill: number; // days
+  activeBuddyPercentage: number;
+  activeMentorshipPercentage: number;
+  rotationRate: number; // % with at least 1 rotation in last 12 months
+  buddyNPS: number;
+  mentorshipNPS: number;
+};
+
+export type MobilityOverview = {
+  byBU: {
+    bu: string;
+    demand: number;
+    applicants: number;
+    balance: "high_demand" | "balanced" | "high_applicants";
+  }[];
+  byChapter: {
+    chapter: string;
+    demand: number;
+    applicants: number;
+    balance: "high_demand" | "balanced" | "high_applicants";
+  }[];
+};
+
+export type SkillsGap = {
+  skill: string;
+  chapter: string;
+  country: string;
+  currentLevel: number;
+  expectedLevel: number;
+  gap: number;
+  affectedMembers: number;
+};
