@@ -1,73 +1,122 @@
-# React + TypeScript + Vite
+# Talent & Development Hub
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern Talent & Development Hub web application with Buddy pairing and Mentorship modules, built with React + TypeScript + Vite + Tailwind CSS, featuring a Nubank-style UI.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### Buddy Module
+- **New Joiner View** (`#/buddy/new-joiner`): 
+  - Welcome dashboard for new joiners
+  - Buddy profile and allocation explanation
+  - 90-day journey timeline with progress tracking
+  - Feedback form (unlocks at 80%+ completion)
+  
+- **Buddy View** (`#/buddy/buddy`):
+  - Dashboard for buddies supporting new joiners
+  - Capacity management
+  - Journey tracking for assigned new joiners
+  - Buddy-specific journey items and feedback
 
-## React Compiler
+### Mentorship Module
+- **Mentee View** (`#/mentorship/mentee`):
+  - Mentorship snapshot and mentor information
+  - Goals & ambitions management
+  - Mentorship journey timeline
+  - Action plan tracking
+  - Rotation & next steps suggestions
+  - End-of-cycle feedback
+  
+- **Mentor View** (`#/mentorship/mentor`):
+  - Mentor dashboard with capacity management
+  - Mentee overview and detailed profiles
+  - Journey tracking and action plan management
+  - End-of-cycle recommendations
+  - Mentor feedback
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Tech Stack
 
-## Expanding the ESLint configuration
+- **React 19** + **TypeScript** + **Vite**
+- **Tailwind CSS 3** for styling
+- **Zustand** for state management
+- **lucide-react** for icons
+- Hash-based routing
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Getting Started
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### Prerequisites
+- Node.js 18+ and npm
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### Installation
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Development
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm run dev
 ```
+
+The app will be available at `http://localhost:5173`
+
+### Build
+
+```bash
+npm run build
+```
+
+## Project Structure
+
+```
+src/
+├── components/          # Shared components
+│   ├── ActionPlanTable.tsx
+│   ├── FeedbackForm.tsx
+│   ├── JourneyItemCard.tsx
+│   ├── JourneyTimeline.tsx
+│   ├── MatchingExplanationCard.tsx
+│   ├── Navigation.tsx
+│   └── ProfileCard.tsx
+├── lib/                # Matching engines
+│   ├── buddyMatching.ts
+│   └── mentorshipMatching.ts
+├── mock/               # Mock data
+│   ├── buddyData.ts
+│   └── mentorshipData.ts
+├── pages/              # Page components
+│   ├── BuddyBuddyPage.tsx
+│   ├── BuddyNewJoinerPage.tsx
+│   ├── MentorshipMenteePage.tsx
+│   └── MentorshipMentorPage.tsx
+├── store/              # Zustand store
+│   └── useStore.ts
+└── types/              # TypeScript types
+    └── index.ts
+```
+
+## Mock Data
+
+The application uses mock data with the following examples:
+
+- **New Joiner**: Lucas Moda (paired with Thiago Fontes)
+- **Buddy**: Thiago Fontes, José Luciano
+- **Mentee**: Ariel Fontes (mentored by Henrique Lopes)
+- **Mentor**: Henrique Lopes, Emilio Gonzalez
+
+## Navigation
+
+- `#/buddy/new-joiner` - New Joiner view
+- `#/buddy/buddy` - Buddy view
+- `#/mentorship/mentee` - Mentee view
+- `#/mentorship/mentor` - Mentor view
+
+## Design
+
+- **Primary Color**: #820AD1 (Nubank purple)
+- **UI Style**: Clean, modern dashboard with rounded cards, soft shadows, and subtle gradients
+- **Responsive**: Desktop-first design with mobile support
+
+## License
+
+MIT
