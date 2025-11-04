@@ -1,4 +1,4 @@
-import type { Mentee, Mentor, ActionPlanItem, JourneyItem } from "../types";
+import type { Mentee, Mentor, ActionPlanItem, JourneyItem, RotationSuggestion } from "../types";
 
 export const mentees: Mentee[] = [
   {
@@ -175,3 +175,4 @@ export const rotationDestinations = [
   },
 ];
 
+export const rotationSuggestions: RotationSuggestion[] = [];

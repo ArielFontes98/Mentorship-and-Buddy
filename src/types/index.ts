@@ -98,9 +98,55 @@ export type ActionPlanItem = {
   status: "open" | "in_progress" | "done";
 };
 
+// Courses module
+export type Course = {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  skills: string[]; // Skills this course develops
+  estimatedMinutes: number;
+  level: "beginner" | "intermediate" | "advanced";
+  format: "video" | "reading" | "interactive" | "workshop";
+  thumbnail?: string;
+};
+
+export type OnboardingPath = {
+  id: string;
+  title: string;
+  description: string;
+  courses: string[]; // Course IDs in order
+  estimatedTotalMinutes: number;
+};
+
+export type RotationSuggestion = {
+  id: string;
+  mentorshipId: string;
+  suggestedBy: string; // mentor ID
+  suggestedTo: string; // mentee ID
+  destination: {
+    bu: string;
+    chapter: string;
+    function: string;
+    country: string;
+  };
+  reason: string;
+  status: "pending" | "accepted" | "rejected";
+  createdAt: string;
+};
+
+export type BuddyCourseAllocation = {
+  id: string;
+  buddyId: string;
+  newJoinerId: string;
+  courseId: string;
+  allocatedAt: string;
+  dueDate?: string;
+  status: "pending" | "in_progress" | "completed";
+};
+
 export type MatchingSuggestion = {
   id: string;
   score: number;
   explanation: string[];
 };
-

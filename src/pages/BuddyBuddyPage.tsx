@@ -1,18 +1,21 @@
 import { useState } from "react";
 import { newJoiners, buddies, buddyJourneyItems } from "../mock/buddyData";
+import { courses } from "../mock/coursesData";
 import { ProfileCard } from "../components/ProfileCard";
 import { JourneyTimeline } from "../components/JourneyTimeline";
 import { FeedbackForm } from "../components/FeedbackForm";
+import { CourseCard } from "../components/CourseCard";
 import { useStore } from "../store/useStore";
-import { CheckCircle2, Clock, AlertCircle } from "lucide-react";
+import { CheckCircle2, Clock, AlertCircle, BookOpen, Plus } from "lucide-react";
 
 export function BuddyBuddyPage() {
-  const { completedItems } = useStore();
+  const { completedItems, buddyCourseAllocations, allocateCourse } = useStore();
   const [buddy] = useState(buddies[0]); // Thiago Fontes
   const [assignedNewJoiners] = useState(
     newJoiners.filter((nj) => nj.buddyId === buddy.id)
   );
   const [selectedNewJoiner, setSelectedNewJoiner] = useState(assignedNewJoiners[0]);
+  const [showCourseAllocation, setShowCourseAllocation] = useState(false);
   
   // Get items for the selected new joiner
   const newJoinerItems = selectedNewJoiner
@@ -204,6 +207,133 @@ export function BuddyBuddyPage() {
               groupBy="week"
               showOwner={true}
             />
+          </div>
+        )}
+        
+        {/* Allocate Courses to New Joiner */}
+        {selectedNewJoiner && (
+          <div className="mb-8">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-2xl font-semibold text-gray-900">
+                Allocate Courses to {selectedNewJoiner.name}
+              </h2>
+              <button
+                onClick={() => setShowCourseAllocation(!showCourseAllocation)}
+                className="btn-primary flex items-center gap-2"
+              >
+                <Plus className="w-4 h-4" />
+                {showCourseAllocation ? "Hide" : "Allocate Course"}
+              </button>
+            </div>
+            
+            {showCourseAllocation && (
+              <div className="card mb-4">
+                <h3 className="font-semibold text-gray-900 mb-4">Available Courses</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {courses.map((course) => {
+                    const isAllocated = buddyCourseAllocations.some(
+                      (alloc) =>
+                        alloc.courseId === course.id &&
+                        alloc.newJoinerId === selectedNewJoiner.id &&
+                        alloc.buddyId === buddy.id
+                    );
+                    
+                    return (
+                      <div key={course.id} className="relative">
+                        <CourseCard
+                          course={course}
+                          showActions={false}
+                        />
+                        {isAllocated ? (
+                          <div className="absolute top-2 right-2 px-2 py-1 bg-green-100 text-green-700 rounded text-xs font-medium">
+                            Allocated
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() => {
+                              const allocation = {
+                                id: `alloc_${Date.now()}`,
+                                buddyId: buddy.id,
+                                newJoinerId: selectedNewJoiner.id,
+                                courseId: course.id,
+                                allocatedAt: new Date().toISOString(),
+                                status: "pending" as const,
+                              };
+                              allocateCourse(allocation);
+                              alert(`Course "${course.title}" allocated to ${selectedNewJoiner.name}`);
+                            }}
+                            className="absolute bottom-2 right-2 left-2 btn-primary text-sm"
+                          >
+                            Allocate Course
+                          </button>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+            
+            {/* Allocated Courses */}
+            <div className="card">
+              <h3 className="font-semibold text-gray-900 mb-4">Allocated Courses</h3>
+              {buddyCourseAllocations
+                .filter(
+                  (alloc) =>
+                    alloc.newJoinerId === selectedNewJoiner?.id &&
+                    alloc.buddyId === buddy.id
+                )
+                .length === 0 ? (
+                <p className="text-gray-600 text-center py-8">
+                  No courses allocated yet. Click "Allocate Course" to assign courses.
+                </p>
+              ) : (
+                <div className="space-y-3">
+                  {buddyCourseAllocations
+                    .filter(
+                      (alloc) =>
+                        alloc.newJoinerId === selectedNewJoiner?.id &&
+                        alloc.buddyId === buddy.id
+                    )
+                    .map((alloc) => {
+                      const course = courses.find((c) => c.id === alloc.courseId);
+                      if (!course) return null;
+                      
+                      return (
+                        <div
+                          key={alloc.id}
+                          className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
+                        >
+                          <div className="flex items-center gap-3">
+                            <BookOpen className="w-5 h-5 text-primary-600" />
+                            <div>
+                              <h4 className="font-medium text-gray-900">{course.title}</h4>
+                              <p className="text-sm text-gray-600">
+                                Allocated on {new Date(alloc.allocatedAt).toLocaleDateString()}
+                              </p>
+                            </div>
+                          </div>
+                          <span
+                            className={`px-3 py-1 rounded text-sm font-medium ${
+                              alloc.status === "completed"
+                                ? "bg-green-100 text-green-700"
+                                : alloc.status === "in_progress"
+                                ? "bg-primary-100 text-primary-700"
+                                : "bg-gray-100 text-gray-700"
+                            }`}
+                          >
+                            {alloc.status === "completed"
+                              ? "Completed"
+                              : alloc.status === "in_progress"
+                              ? "In Progress"
+                              : "Pending"}
+                          </span>
+                        </div>
+                      );
+                    })}
+                </div>
+              )}
+            </div>
           </div>
         )}
         

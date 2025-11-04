@@ -5,12 +5,13 @@ import { ProfileCard } from "../components/ProfileCard";
 import { JourneyTimeline } from "../components/JourneyTimeline";
 import { ActionPlanTable } from "../components/ActionPlanTable";
 import { MatchingExplanationCard } from "../components/MatchingExplanationCard";
+import { RotationSuggestionCard } from "../components/RotationSuggestionCard";
 import { FeedbackForm } from "../components/FeedbackForm";
 import { useStore } from "../store/useStore";
 import { Target, Calendar, TrendingUp } from "lucide-react";
 
 export function MentorshipMenteePage() {
-  const { completedItems, actionPlanItems: storeActionPlanItems } = useStore();
+  const { completedItems, actionPlanItems: storeActionPlanItems, rotationSuggestions: storeRotationSuggestions, updateRotationSuggestion } = useStore();
   const [mentee] = useState(mentees[0]); // Ariel Fontes
   const [mentor] = useState(
     mentors.find((m) => m.id === mentee.mentorId)
@@ -18,7 +19,7 @@ export function MentorshipMenteePage() {
   const [mentorSuggestions, setMentorSuggestions] = useState<
     { mentorId: string; score: number; explanation: string[] }[]
   >([]);
-  const [rotationSuggestions, setRotationSuggestions] = useState<
+  const [autoRotationSuggestions, setAutoRotationSuggestions] = useState<
     { destinationId: string; score: number; explanation: string[] }[]
   >([]);
   const [goals, setGoals] = useState<string[]>(mentee.ambitions);
@@ -38,9 +39,9 @@ export function MentorshipMenteePage() {
       setMentorSuggestions(suggs);
     }
     
-    // Get rotation suggestions
+    // Get rotation suggestions (auto-generated)
     const rotSuggs = suggestRotationsForMentee(mentee, rotationDestinations);
-    setRotationSuggestions(rotSuggs);
+    setAutoRotationSuggestions(rotSuggs);
   }, [mentee]);
   
   // Calculate journey completion
@@ -236,18 +237,49 @@ export function MentorshipMenteePage() {
           />
         </div>
         
-        {/* Rotation & Next Steps Suggestions */}
-        {rotationSuggestions.length > 0 && (
+        {/* Rotation Suggestions from Mentor */}
+        {storeRotationSuggestions.filter((s) => s.suggestedTo === mentee.id).length > 0 && (
           <div className="mb-8">
             <div className="flex items-center gap-2 mb-4">
               <TrendingUp className="w-6 h-6 text-primary-600" />
               <h2 className="text-2xl font-semibold text-gray-900">
-                Rotation & Next Steps Suggestions
+                Rotation Suggestions from Your Mentor
+              </h2>
+            </div>
+            <div className="space-y-4">
+              {storeRotationSuggestions
+                .filter((s) => s.suggestedTo === mentee.id)
+                .map((suggestion) => (
+                  <RotationSuggestionCard
+                    key={suggestion.id}
+                    suggestion={suggestion}
+                    canAccept={true}
+                    onAccept={(id) => {
+                      updateRotationSuggestion(id, "accepted");
+                      alert("Rotation suggestion accepted!");
+                    }}
+                    onReject={(id) => {
+                      updateRotationSuggestion(id, "rejected");
+                      alert("Rotation suggestion rejected.");
+                    }}
+                  />
+                ))}
+            </div>
+          </div>
+        )}
+
+        {/* Rotation & Next Steps Suggestions (Auto-generated) */}
+        {autoRotationSuggestions.length > 0 && (
+          <div className="mb-8">
+            <div className="flex items-center gap-2 mb-4">
+              <TrendingUp className="w-6 h-6 text-primary-600" />
+              <h2 className="text-2xl font-semibold text-gray-900">
+                Automated Rotation Suggestions
               </h2>
             </div>
             <MatchingExplanationCard
-              title="Suggested Rotations"
-              suggestions={rotationSuggestions.map((s) => ({
+              title="Suggested Rotations (Based on Skills & Ambitions)"
+              suggestions={autoRotationSuggestions.map((s) => ({
                 id: s.destinationId,
                 score: s.score,
                 explanation: s.explanation,

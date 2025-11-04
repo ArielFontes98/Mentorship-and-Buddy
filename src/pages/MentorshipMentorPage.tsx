@@ -1,20 +1,26 @@
 import { useState } from "react";
-import { mentees, mentors, mentorshipJourneyItems, actionPlanItems } from "../mock/mentorshipData";
+import { mentees, mentors, mentorshipJourneyItems, actionPlanItems, rotationDestinations } from "../mock/mentorshipData";
 import { ProfileCard } from "../components/ProfileCard";
 import { JourneyTimeline } from "../components/JourneyTimeline";
 import { ActionPlanTable } from "../components/ActionPlanTable";
 import { FeedbackForm } from "../components/FeedbackForm";
+import { RotationSuggestionCard } from "../components/RotationSuggestionCard";
 import { useStore } from "../store/useStore";
-import { CheckCircle2, AlertCircle, Target } from "lucide-react";
+import { CheckCircle2, AlertCircle, Target, Plus, Building2 } from "lucide-react";
 
 export function MentorshipMentorPage() {
-  const { completedItems, actionPlanItems: storeActionPlanItems, addActionPlanItem } = useStore();
+  const { completedItems, actionPlanItems: storeActionPlanItems, addActionPlanItem, rotationSuggestions, addRotationSuggestion } = useStore();
   const [mentor] = useState(mentors[0]); // Henrique Lopes
   const [assignedMentees] = useState(
     mentees.filter((m) => m.mentorId === mentor.id)
   );
   const [selectedMentee, setSelectedMentee] = useState(assignedMentees[0]);
   const [newActionItem, setNewActionItem] = useState({ title: "", description: "", owner: "mentee" as "mentee" | "mentor" | "both" });
+  const [showRotationSuggestion, setShowRotationSuggestion] = useState(false);
+  const [newRotationSuggestion, setNewRotationSuggestion] = useState({
+    destination: rotationDestinations[0]?.id || "",
+    reason: "",
+  });
   
   // Merge store action plan items with mock data
   const allActionPlanItems = selectedMentee
@@ -315,6 +321,125 @@ export function MentorshipMentorPage() {
           </div>
         )}
         
+        {/* Rotation Suggestions */}
+        {selectedMentee && (
+          <div className="mb-8">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-2xl font-semibold text-gray-900">
+                Rotation Suggestions for {selectedMentee.name}
+              </h2>
+              <button
+                onClick={() => setShowRotationSuggestion(!showRotationSuggestion)}
+                className="btn-primary flex items-center gap-2"
+              >
+                <Plus className="w-4 h-4" />
+                Suggest Rotation
+              </button>
+            </div>
+
+            {showRotationSuggestion && (
+              <div className="card mb-4">
+                <h3 className="font-semibold text-gray-900 mb-4">New Rotation Suggestion</h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Destination
+                    </label>
+                    <select
+                      value={newRotationSuggestion.destination}
+                      onChange={(e) =>
+                        setNewRotationSuggestion({
+                          ...newRotationSuggestion,
+                          destination: e.target.value,
+                        })
+                      }
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    >
+                      {rotationDestinations.map((dest) => (
+                        <option key={dest.id} value={dest.id}>
+                          {dest.bu} - {dest.chapter} ({dest.function})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Reason
+                    </label>
+                    <textarea
+                      value={newRotationSuggestion.reason}
+                      onChange={(e) =>
+                        setNewRotationSuggestion({
+                          ...newRotationSuggestion,
+                          reason: e.target.value,
+                        })
+                      }
+                      rows={4}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      placeholder="Explain why this rotation would benefit the mentee..."
+                    />
+                  </div>
+                  <button
+                    onClick={() => {
+                      const destination = rotationDestinations.find(
+                        (d) => d.id === newRotationSuggestion.destination
+                      );
+                      if (destination && selectedMentee) {
+                        const suggestion = {
+                          id: `rot_${Date.now()}`,
+                          mentorshipId: "mentorship_ariel_henrique",
+                          suggestedBy: mentor.id,
+                          suggestedTo: selectedMentee.id,
+                          destination: {
+                            bu: destination.bu,
+                            chapter: destination.chapter,
+                            function: destination.function,
+                            country: destination.country,
+                          },
+                          reason: newRotationSuggestion.reason,
+                          status: "pending" as const,
+                          createdAt: new Date().toISOString(),
+                        };
+                        addRotationSuggestion(suggestion);
+                        alert(`Rotation suggestion sent to ${selectedMentee.name}`);
+                        setNewRotationSuggestion({ destination: "", reason: "" });
+                        setShowRotationSuggestion(false);
+                      }
+                    }}
+                    className="btn-primary w-full"
+                    disabled={!newRotationSuggestion.destination || !newRotationSuggestion.reason.trim()}
+                  >
+                    Submit Rotation Suggestion
+                  </button>
+                </div>
+              </div>
+            )}
+
+            <div className="space-y-4">
+              {rotationSuggestions
+                .filter((s) => s.suggestedTo === selectedMentee?.id)
+                .length === 0 ? (
+                <div className="card text-center py-8">
+                  <Building2 className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                  <p className="text-gray-600">
+                    No rotation suggestions yet. Click "Suggest Rotation" to create one.
+                  </p>
+                </div>
+              ) : (
+                rotationSuggestions
+                  .filter((s) => s.suggestedTo === selectedMentee?.id)
+                  .map((suggestion) => (
+                    <RotationSuggestionCard
+                      key={suggestion.id}
+                      suggestion={suggestion}
+                      canAccept={false}
+                    />
+                  ))
+              )}
+            </div>
+          </div>
+        )}
+
         {/* End-of-Cycle Recommendations */}
         {selectedMentee && selectedMentee.mentorshipStatus === "completed" && (
           <div className="mb-8">

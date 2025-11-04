@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { Feedback, ActionPlanItem } from '../types';
+import type { Feedback, ActionPlanItem, BuddyCourseAllocation, RotationSuggestion } from '../types';
 
 interface AppState {
   // Journey items completion
@@ -14,12 +14,23 @@ interface AppState {
   actionPlanItems: ActionPlanItem[];
   updateActionPlanItem: (itemId: string, updates: Partial<ActionPlanItem>) => void;
   addActionPlanItem: (item: ActionPlanItem) => void;
+  
+  // Buddy course allocations
+  buddyCourseAllocations: BuddyCourseAllocation[];
+  allocateCourse: (allocation: BuddyCourseAllocation) => void;
+  
+  // Rotation suggestions
+  rotationSuggestions: RotationSuggestion[];
+  addRotationSuggestion: (suggestion: RotationSuggestion) => void;
+  updateRotationSuggestion: (id: string, status: "pending" | "accepted" | "rejected") => void;
 }
 
 export const useStore = create<AppState>((set) => ({
   completedItems: [],
   feedbacks: [],
   actionPlanItems: [],
+  buddyCourseAllocations: [],
+  rotationSuggestions: [],
   
   toggleItemCompletion: (itemId, userId) => {
     set((state) => {
@@ -58,6 +69,26 @@ export const useStore = create<AppState>((set) => ({
   addActionPlanItem: (item) => {
     set((state) => ({
       actionPlanItems: [...state.actionPlanItems, item],
+    }));
+  },
+  
+  allocateCourse: (allocation) => {
+    set((state) => ({
+      buddyCourseAllocations: [...state.buddyCourseAllocations, allocation],
+    }));
+  },
+  
+  addRotationSuggestion: (suggestion) => {
+    set((state) => ({
+      rotationSuggestions: [...state.rotationSuggestions, suggestion],
+    }));
+  },
+  
+  updateRotationSuggestion: (id, status) => {
+    set((state) => ({
+      rotationSuggestions: state.rotationSuggestions.map((suggestion) =>
+        suggestion.id === id ? { ...suggestion, status } : suggestion
+      ),
     }));
   },
 }));

@@ -4,6 +4,8 @@ import { BuddyNewJoinerPage } from "../pages/BuddyNewJoinerPage";
 import { BuddyBuddyPage } from "../pages/BuddyBuddyPage";
 import { MentorshipMenteePage } from "../pages/MentorshipMenteePage";
 import { MentorshipMentorPage } from "../pages/MentorshipMentorPage";
+import { CoursesOnboardingPage } from "../pages/CoursesOnboardingPage";
+import { CoursesRecommendedPage } from "../pages/CoursesRecommendedPage";
 
 export function Navigation() {
   const [currentPath, setCurrentPath] = useState(window.location.hash.slice(1) || "/buddy/new-joiner");
@@ -33,13 +35,25 @@ export function Navigation() {
     { label: "Mentor", path: "#/mentorship/mentor" },
   ];
   
+  const coursesSubTabs = [
+    { label: "Onboarding", path: "#/courses/onboarding" },
+    { label: "Recommended Training", path: "#/courses/recommended" },
+  ];
+  
   const getActiveTab = () => {
     if (currentPath.startsWith("/buddy")) return "buddy";
     if (currentPath.startsWith("/mentorship")) return "mentorship";
+    if (currentPath.startsWith("/courses")) return "courses";
     return "courses";
   };
   
   const renderContent = () => {
+    if (currentPath === "/courses/onboarding") {
+      return <CoursesOnboardingPage />;
+    }
+    if (currentPath === "/courses/recommended") {
+      return <CoursesRecommendedPage />;
+    }
     if (currentPath === "/buddy/new-joiner") {
       return <BuddyNewJoinerPage />;
     }
@@ -52,8 +66,11 @@ export function Navigation() {
     if (currentPath === "/mentorship/mentor") {
       return <MentorshipMentorPage />;
     }
-    // Default to buddy new joiner
-    return <BuddyNewJoinerPage />;
+    // Default to courses onboarding
+    if (currentPath === "/courses" || currentPath === "") {
+      return <CoursesOnboardingPage />;
+    }
+    return <CoursesOnboardingPage />;
   };
   
   const activeTab = getActiveTab();
@@ -94,8 +111,25 @@ export function Navigation() {
           </div>
           
           {/* Sub Navigation */}
-          {(activeTab === "buddy" || activeTab === "mentorship") && (
+          {(activeTab === "courses" || activeTab === "buddy" || activeTab === "mentorship") && (
             <div className="flex items-center gap-2 pb-4 border-t border-gray-100 pt-4">
+              {activeTab === "courses" &&
+                coursesSubTabs.map((subTab) => {
+                  const isActive = currentPath === subTab.path.slice(1);
+                  return (
+                    <a
+                      key={subTab.path}
+                      href={subTab.path}
+                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                        isActive
+                          ? "bg-primary-100 text-primary-700"
+                          : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                      }`}
+                    >
+                      {subTab.label}
+                    </a>
+                  );
+                })}
               {activeTab === "buddy" &&
                 buddySubTabs.map((subTab) => {
                   const isActive = currentPath === subTab.path.slice(1);
