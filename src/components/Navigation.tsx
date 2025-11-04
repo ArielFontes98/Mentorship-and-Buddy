@@ -10,13 +10,14 @@ import { ProfilePage } from "../pages/ProfilePage";
 import { RotationPage } from "../pages/RotationPage";
 import { ManagerDashboardPage } from "../pages/ManagerDashboardPage";
 import { PeopleTalentDashboardPage } from "../pages/PeopleTalentDashboardPage";
+import { LevelingPage } from "../pages/LevelingPage";
 
 export function Navigation() {
-  const [currentPath, setCurrentPath] = useState(window.location.hash.slice(1) || "/buddy/new-joiner");
+  const [currentPath, setCurrentPath] = useState(window.location.hash.slice(1) || "/profile");
   
   useEffect(() => {
     const handleHashChange = () => {
-      setCurrentPath(window.location.hash.slice(1) || "/buddy/new-joiner");
+      setCurrentPath(window.location.hash.slice(1) || "/profile");
     };
     
     window.addEventListener("hashchange", handleHashChange);
@@ -24,10 +25,10 @@ export function Navigation() {
   }, []);
   
   const tabs = [
-    { id: "courses", label: "Courses", icon: BookOpen, path: "#/courses" },
-    { id: "buddy", label: "Buddy", icon: Users, path: "#/buddy" },
-    { id: "mentorship", label: "Mentorship", icon: GraduationCap, path: "#/mentorship" },
     { id: "profile", label: "Profile", icon: User, path: "#/profile" },
+    { id: "buddy", label: "Buddy", icon: Users, path: "#/buddy" },
+    { id: "courses", label: "Courses", icon: BookOpen, path: "#/courses" },
+    { id: "mentorship", label: "Mentorship", icon: GraduationCap, path: "#/mentorship" },
     { id: "rotation", label: "Rotation", icon: ArrowRightLeft, path: "#/rotation" },
     { id: "manager", label: "Manager", icon: BarChart3, path: "#/manager/dashboard" },
     { id: "people", label: "People", icon: Building2, path: "#/people/talent-dashboard" },
@@ -49,22 +50,22 @@ export function Navigation() {
   ];
   
   const getActiveTab = () => {
+    if (currentPath.startsWith("/profile") || currentPath.startsWith("/leveling")) return "profile";
     if (currentPath.startsWith("/buddy")) return "buddy";
-    if (currentPath.startsWith("/mentorship")) return "mentorship";
     if (currentPath.startsWith("/courses")) return "courses";
-    if (currentPath.startsWith("/profile")) return "profile";
+    if (currentPath.startsWith("/mentorship")) return "mentorship";
     if (currentPath.startsWith("/rotation")) return "rotation";
     if (currentPath.startsWith("/manager")) return "manager";
     if (currentPath.startsWith("/people")) return "people";
-    return "courses";
+    return "profile";
   };
   
   const renderContent = () => {
-    if (currentPath === "/courses/onboarding") {
-      return <CoursesOnboardingPage />;
+    if (currentPath === "/leveling") {
+      return <LevelingPage />;
     }
-    if (currentPath === "/courses/recommended") {
-      return <CoursesRecommendedPage />;
+    if (currentPath === "/profile") {
+      return <ProfilePage />;
     }
     if (currentPath === "/buddy/new-joiner") {
       return <BuddyNewJoinerPage />;
@@ -72,14 +73,17 @@ export function Navigation() {
     if (currentPath === "/buddy/buddy") {
       return <BuddyBuddyPage />;
     }
+    if (currentPath === "/courses/onboarding") {
+      return <CoursesOnboardingPage />;
+    }
+    if (currentPath === "/courses/recommended") {
+      return <CoursesRecommendedPage />;
+    }
     if (currentPath === "/mentorship/mentee") {
       return <MentorshipMenteePage />;
     }
     if (currentPath === "/mentorship/mentor") {
       return <MentorshipMentorPage />;
-    }
-    if (currentPath === "/profile") {
-      return <ProfilePage />;
     }
     if (currentPath === "/rotation") {
       return <RotationPage />;
@@ -90,11 +94,11 @@ export function Navigation() {
     if (currentPath === "/people/talent-dashboard") {
       return <PeopleTalentDashboardPage />;
     }
-    // Default to courses onboarding
+    // Default to profile
     if (currentPath === "/courses" || currentPath === "") {
-      return <CoursesOnboardingPage />;
+      return <ProfilePage />;
     }
-    return <CoursesOnboardingPage />;
+    return <ProfilePage />;
   };
   
   const activeTab = getActiveTab();

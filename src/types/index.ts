@@ -348,3 +348,18 @@ export type SkillsGap = {
   gap: number;
   affectedMembers: number;
 };
+
+// Leveling module
+export type LevelExpectation = {
+  level: string;
+  function: string;
+  expectations: {
+    category: string;
+    items: string[];
+  }[];
+  skills: {
+    name: string;
+    expectedLevel: number; // 1-5
+    description?: string;
+  }[];
+};
